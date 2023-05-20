@@ -1,24 +1,20 @@
-//Transmitter Code
-
-#define CE 7
-#define CSN 8
-
 #include <SPI.h>
-#include <nRF24L01.h>
 #include <RF24.h>
 
-RF24 radio(7, 8); // CE, CSN
-const byte address[6] = "00001";
+RF24 radio(9, 10);  // CE, CSN
+
+const uint64_t address = 0xABCDABCDABCDLL; // Address between the transmitter and receiver
 
 void setup() {
+  Serial.begin(9600);
   radio.begin();
   radio.openWritingPipe(address);
   radio.setPALevel(RF24_PA_LOW);
-  radio.stopListening();
 }
 
 void loop() {
   const char text[] = "Hello World";
   radio.write(&text, sizeof(text));
+  Serial.println("Message sent: Hello World");
   delay(1000);
 }

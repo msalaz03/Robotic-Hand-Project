@@ -1,25 +1,25 @@
 //Receiver Code
-
 #include <SPI.h>
+#include <nRF24L01.h>
 #include <RF24.h>
 
-RF24 radio(9, 10);  // CE, CSN
+RF24 radio(7,8);
 
-const uint64_t address = 0xABCDABCDABCDLL; // Address between the transmitter and receiver
+const byte address[6] = "00001";
 
 void setup() {
   Serial.begin(9600);
   radio.begin();
-  radio.openReadingPipe(1, address);
-  radio.setPALevel(RF24_PA_LOW);
+  radio.openReading(0, address);
+  radio.setPALevel(RF_24_PA_MIN);
   radio.startListening();
 }
 
 void loop() {
-  if (radio.available()) {
-    char text[32] = "";
-    radio.read(&text, sizeof(text));
-    Serial.print("Received message: ");
-    Serial.println(text);
+  if (radio.available()){
+      char text[32] = "";
+      radio.read(&text, sizeof(text));
+      Serial.println(text);
   }
+
 }

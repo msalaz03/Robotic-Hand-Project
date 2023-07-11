@@ -11,13 +11,12 @@
 
   const int servoPin = 3;
   const int servoPin2 = 5;
-
-  const int ARRAY_SIZE = 2;
+  const int ARRAY_SIZE = 5;
 
   Servo myServo;
   Servo myServo2;
   //define variable to receive value
-  int msg[ARRAY_SIZE];
+  int msg[5];
 
 
   void setup() {
@@ -27,8 +26,8 @@
     radio.openReadingPipe(0, address);
     radio.setPALevel(RF24_PA_MIN);
     radio.startListening();
-    myServo.attach(servoPin);
-    myServo2.attach(servoPin2);
+    //myServo.attach(servoPin);
+    //myServo2.attach(servoPin2);
   }
 
   void loop() {
@@ -43,11 +42,15 @@
       //radio.read(&receivedString[1], strlen(receivedString[1]) + 1);
 
       // myServo.write(value/10);
-      myServo.write(msg[0]);
-      myServo2.write(msg[1]);
+      //myServo.write(msg[0]);
+      //myServo2.write(msg[1]);
 
       Serial.println("MOTOR ONE: " + String(msg[0]));
       Serial.println("MOTOR TWO: " + String(msg[1]));
+      Serial.println("MOTOR THREE: " + String(msg[2]));
+      Serial.println("MOTOR FOUR: " + String(msg[3]));
+      Serial.println("MOTOR FIVE: " + String(msg[4]));
+
       delay(10);
     }
 

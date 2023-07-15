@@ -114,76 +114,84 @@ void welcomeScreen(){
 /////////////////////////// Display flex sensors values ///////////////////
 void gloveInterface() {
   // Set Strings
+  int receivedData[5];
+
   tft.fillScreen(ILI9341_BLACK);
   String thumb = "Thumb: ";
   String index = "Index: ";
   String middle = "Middle: ";
   String ring = "Ring: ";
   String pinky = "Pinky: ";
-
-  // Clear initial offline status
-  tft.fillRect(80, 10, 80, 20, ILI9341_BLACK);
   
-  while (true) {
+  while (true) {  
     if (Serial.available()) {
       // Read the received data
-      int receivedData[5];
       Serial.readBytes((byte*)receivedData, sizeof(receivedData));
-
       // SYSTEM ONLINE
-      tft.setCursor(10, 10);
-      tft.setTextColor(ILI9341_WHITE);
-      tft.print("System: ");
-      tft.setTextColor(ILI9341_GREEN);
-      tft.print("ONLINE");
+      //systemconnection(true);
       
       // Clear region for updated data
-      tft.fillRect(195, centerTextHeight(-40) - 10, 40, 20, ILI9341_BLACK);
-      tft.fillRect(195, centerTextHeight(-20) - 10, 40, 20, ILI9341_BLACK);
-      tft.fillRect(195, centerTextHeight(0) - 10, 40, 20, ILI9341_BLACK);
-      tft.fillRect(195, centerTextHeight(20) - 10, 40, 20, ILI9341_BLACK);
-      tft.fillRect(195, centerTextHeight(40) - 10, 40, 30, ILI9341_BLACK);
+      tft.fillRect(195, centerTextHeight(-40) - 10, 60, 20, ILI9341_BLACK);
+      tft.fillRect(195, centerTextHeight(-20) - 10, 60, 20, ILI9341_BLACK);
+      tft.fillRect(195, centerTextHeight(0) - 10, 60, 20, ILI9341_BLACK);
+      tft.fillRect(195, centerTextHeight(20) - 10, 60, 20, ILI9341_BLACK);
+      tft.fillRect(195, centerTextHeight(40) - 10, 60, 30, ILI9341_BLACK);
 
       // Thumb
       tft.setTextColor(ILI9341_WHITE);
-      tft.setCursor(centerTextWidth(thumb, 12), centerTextHeight(-40));
-      tft.println(thumb + String(receivedData[0]));
+      tft.setCursor(centerTextWidth(thumb, 12), centerTextHeight(40));
+      tft.println(thumb + String(receivedData[0]/256));
 
       // Index
       tft.setTextColor(ILI9341_WHITE);
-      tft.setCursor(centerTextWidth(index, 12), centerTextHeight(-20));
-      tft.println(index + String(receivedData[1]));
+      tft.setCursor(centerTextWidth(index, 12), centerTextHeight(-40));
+      tft.println(index + String(receivedData[1]/256));
 
       // Middle
       tft.setTextColor(ILI9341_WHITE);
-      tft.setCursor(centerTextWidth(middle, 12), centerTextHeight(0));
-      tft.println(middle + String(receivedData[2]));
+      tft.setCursor(centerTextWidth(middle, 12), centerTextHeight(-20));
+      tft.println(middle + String(receivedData[2]/256));
 
       // Ring
       tft.setTextColor(ILI9341_WHITE);
-      tft.setCursor(centerTextWidth(ring, 12), centerTextHeight(20));
-      tft.println(ring + String(receivedData[3]));
+      tft.setCursor(centerTextWidth(ring, 12), centerTextHeight(0));
+      tft.println(ring + String(receivedData[3]/256));
 
       // Pinky
       tft.setTextColor(ILI9341_WHITE);
-      tft.setCursor(centerTextWidth(pinky, 12), centerTextHeight(40));
-      tft.println(pinky + String(receivedData[4]));
+      tft.setCursor(centerTextWidth(pinky, 12), centerTextHeight(20));
+      tft.println(pinky + String(receivedData[4]/256));
     }
-    else {
-      tft.fillRect(90, 10, 100, 20, ILI9341_BLACK);
-      tft.setCursor(100, 10);
-      tft.setTextColor(ILI9341_RED);
-      tft.print("OFFLINE");
-      
-      // Clear previous data
-      tft.fillRect(195, centerTextHeight(-40) - 10, 40, 70, ILI9341_BLACK);
-    }
+    
   }
 }
-  
 
-   
+//connection status
+void systemconnection(boolean online){
+    int maxStringLength = 158; //String Pixel Width
+    int maxStringWidth = 8; //String Pixel Height
+    tft.fillRect(50, 50, maxStringLength, maxStringWidth,ILI9341_BLACK); //draw over previous status update
+    tft.setCursor(50,50);
 
+    if (online){
+      //status online
+      tft.setTextColor(ILI9341_WHITE);
+      tft.print("CONNECTION: ");
+
+      tft.setTextColor(ILI9341_GREEN);
+      tft.print("ONLINE");
+    }
+    else if (!online){
+      //status online
+      tft.setTextColor(ILI9341_WHITE);
+      tft.print("CONNECTION: ");
+
+      tft.setTextColor(ILI9341_RED);
+      tft.print("OFFLINE");
+
+    }
+
+}
 
 //////////////////////// Center Text Functions  //////////////////////
 int16_t centerTextWidth(String name, int pixelWidth){ 

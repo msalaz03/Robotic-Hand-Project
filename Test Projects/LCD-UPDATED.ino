@@ -6,8 +6,10 @@
 #define TFT_DC 9
 #define TFT_CS 10
 
-//Wired Communcation
-int data[5];
+//global variables to prevent overriding of connection status.
+boolean stopLoop = false;
+boolean previousStatus = false;
+static int previousMode = -1;
 
 //Setting up SPI with defined DC & CS PINS
 Adafruit_ILI9341 tft = Adafruit_ILI9341(TFT_CS, TFT_DC);
@@ -16,28 +18,29 @@ Adafruit_ILI9341 tft = Adafruit_ILI9341(TFT_CS, TFT_DC);
 void setup() {
   Serial.begin(9600);
   tft.begin();
+  
 
 }
 
 
-void loop() {
+void loop() 
+{
   //rotate screen & loading screen
-  for (int rotation = 0; rotation < 4; rotation++){
+  for (int rotation = 0; rotation < 4; rotation++)
+  {
     tft.setRotation(rotation);
     testTriangles();
   }
-  
-  //Set Horizontal + Welcome Screen
-  tft.setRotation(3);
-  welcomeScreen(); //15 second delay intermission
- 
 
+  tft.setRotation(3);   //Set Horizontal + Welcome Screen
+  welcomeScreen();  //15 second delay intermission
   gloveInterface();
 }
 
 
-///////////////////// Triangle Graphics.  ///////////////////////////////
-void testTriangles() {
+//triangle graphics
+void testTriangles() 
+{
   int n, i;
   int cx = tft.width()  / 2 - 1;
   int cy = tft.height() / 2 - 1;
@@ -56,8 +59,9 @@ void testTriangles() {
 }
 
 
-////////////////////  Author Documentation  ///////////////////////////
-void welcomeScreen(){
+//author documentation
+void welcomeScreen()
+{
   // TextSize(1) Width:6, Height:8 (increase size is multiples by size factor)
 
   // String Setup
@@ -111,26 +115,42 @@ void welcomeScreen(){
 }
 
 
-/////////////////////////// Display flex sensors values ///////////////////
-void gloveInterface() {
-  // Set Strings
-  int receivedData[5];
-
-  tft.fillScreen(ILI9341_BLACK);
-  String thumb = "Thumb: ";
-  String index = "Index: ";
+//flex sensor values + main screen
+void gloveInterface() 
+{
+  String thumb = "Thumb: "; 
+  String index = "Index: "; 
   String middle = "Middle: ";
-  String ring = "Ring: ";
+  String ring = "Ring: "; 
   String pinky = "Pinky: ";
-  
-  while (true) {  
-    if (Serial.available()) {
+
+  int receivedData[5];  //flex sensor values
+  bool receivedMode = false; //mode 1 or 2
+
+  tft.fillScreen(ILI9341_BLACK);  //reset screen
+  unsigned long offlineTime = 0; //time buffer
+
+ while (true) 
+ {  
+    if (Serial.available()) 
+    {
       // Read the received data
       Serial.readBytes((byte*)receivedData, sizeof(receivedData));
+
+      if (Serial.available() >= sizeof(bool)) {
+        byte boolByte = Serial.read();
+        receivedMode = boolByte;
+      }
+
       // SYSTEM ONLINE
-      //systemconnection(true);
+      if(!previousStatus)
+      {
+        systemconnection(true);
+      }
+
+       modeDisplay(receivedMode,previousMode);
       
-      // Clear region for updated data
+      //print string values
       tft.fillRect(195, centerTextHeight(-40) - 10, 60, 20, ILI9341_BLACK);
       tft.fillRect(195, centerTextHeight(-20) - 10, 60, 20, ILI9341_BLACK);
       tft.fillRect(195, centerTextHeight(0) - 10, 60, 20, ILI9341_BLACK);
@@ -161,45 +181,100 @@ void gloveInterface() {
       tft.setTextColor(ILI9341_WHITE);
       tft.setCursor(centerTextWidth(pinky, 12), centerTextHeight(20));
       tft.println(pinky + String(receivedData[4]/256));
+      delay(100);
+      offlineTime = millis();
     }
+    else
+    {
+      if (!stopLoop && (millis() - offlineTime > 300))
+      {
+        systemconnection(false);
+      }
+      
+    }
+    Serial.println(receivedMode);
+    previousMode = receivedMode;
+   
     
+  
+  }
+}
+
+
+//display user or automated mode
+void modeDisplay(int mode, int previousMode)
+{
+  if (previousMode == mode){
+    return;
+  }
+  
+  String userON = "USER CONTROL: ON";
+  String userOFF  = "USER CONTROL: OFF";
+
+  tft.fillRect(centerTextWidth(userOFF,12), centerTextHeight(60) + 10, 200, 25, ILI9341_BLACK);
+  tft.setCursor(centerTextWidth(userOFF,12), centerTextHeight(60) + 10);
+  tft.setTextSize(2);
+  tft.setTextColor(ILI9341_WHITE);
+  
+
+  //user control
+  if (mode == 1)
+  {
+    tft.println(userON);
+  }
+  else if(mode == 0)
+  {
+    tft.println(userOFF);
   }
 }
 
 //connection status
-void systemconnection(boolean online){
-    int maxStringLength = 158; //String Pixel Width
-    int maxStringWidth = 8; //String Pixel Height
-    tft.fillRect(50, 50, maxStringLength, maxStringWidth,ILI9341_BLACK); //draw over previous status update
+void systemconnection(boolean online)
+{
+    int maxStringLength = 250; //String Pixel Width
+    int maxStringWidth = 16; //String Pixel Height
     tft.setCursor(50,50);
 
     if (online){
       //status online
-      tft.setTextColor(ILI9341_WHITE);
-      tft.print("CONNECTION: ");
-
-      tft.setTextColor(ILI9341_GREEN);
-      tft.print("ONLINE");
+      if(!previousStatus){
+        tft.fillRect(50, 50, maxStringLength, maxStringWidth, ILI9341_BLACK);
+        delay(10);
+        tft.setTextColor(ILI9341_WHITE);
+        tft.print("CONNECTION: ");
+        tft.setTextColor(ILI9341_GREEN);
+        tft.print("ONLINE");
+        previousStatus = true;
+        stopLoop = false;
+      }
+     
     }
     else if (!online){
       //status online
-      tft.setTextColor(ILI9341_WHITE);
-      tft.print("CONNECTION: ");
-
-      tft.setTextColor(ILI9341_RED);
-      tft.print("OFFLINE");
-
+      if(previousStatus && !stopLoop){
+        tft.fillRect(50, 50, maxStringLength, maxStringWidth, ILI9341_BLACK);
+        delay(10);
+        previousStatus = false;
+        stopLoop = true;
+        tft.setTextColor(ILI9341_WHITE);
+        tft.print("CONNECTION: ");
+        tft.setTextColor(ILI9341_RED);
+        tft.print("OFFLINE");
+      }
+      
     }
 
 }
 
-//////////////////////// Center Text Functions  //////////////////////
-int16_t centerTextWidth(String name, int pixelWidth){ 
+//center text width 
+int16_t centerTextWidth(String name, int pixelWidth)
+{ 
   int16_t textWidth = name.length() * pixelWidth;
   return (tft.width() - textWidth) / 2;
 }
 
-//Center Text Height
-int16_t centerTextHeight(int height){
+//center text height
+int16_t centerTextHeight(int height)
+{
   return (tft.height() / 2) + height;
 }

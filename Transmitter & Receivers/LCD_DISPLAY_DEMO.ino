@@ -128,39 +128,28 @@ void welcomeScreen()
 //flex sensor values + main screen
 void gloveInterface() 
 {
-  
-  uint16_t borderColor = ILI9341_WHITE;
-  int screenWidth = tft.width();
-  int screenHeight = tft.height();
-  int borderWidth = 2; // Adjust this value to change the width of the border
-
-  // Top border
-
   String thumb = "Thumb: "; 
   String index = "Index: "; 
   String middle = "Middle: ";
   String ring = "Ring: "; 
   String pinky = "Pinky: ";
 
-  int receivedData[5];  //flex sensor values
+  int receivedData[6];  //flex sensor values
   bool receivedMode = false; //mode 1 or 2
+
+  receivedData[5] = 0;
 
   tft.fillScreen(ILI9341_BLACK);  //reset screen
   unsigned long offlineTime = 0; //time buffer
 
  while (true) 
  {  
-  tft.drawRect(0, 0, screenWidth, borderWidth, borderColor);
-  // Left border
-  tft.drawRect(0, borderWidth, borderWidth, screenHeight - 2 * borderWidth, borderColor);
-  // Right border
-  tft.drawRect(screenWidth - borderWidth, borderWidth, borderWidth, screenHeight - 2 * borderWidth, borderColor);
-  // Bottom border
-  tft.drawRect(0, screenHeight - borderWidth, screenWidth, borderWidth, borderColor);
-  
+   int borderWidth = 5;
+    tft.drawRect(borderWidth, borderWidth, tft.width() - 2 * borderWidth, tft.height() - 2 * borderWidth, ILI9341_WHITE);
 
-    if (radio.available()) 
+    if (radio.available() && receivedData[5] == 2) 
     {
+      
       // Read the received data
       radio.read(&receivedData, sizeof(receivedData));
       // SYSTEM ONLINE
@@ -168,8 +157,9 @@ void gloveInterface()
       {
         systemconnection(true);
       }
-       receivedMode = 1;
-       modeDisplay(receivedMode,previousMode);
+      
+       modeDisplay(receivedData[5],previousMode);
+       previousMode = receivedData[5];
       
       //print string values
       tft.fillRect(195, centerTextHeight(-40) - 10, 60, 20, ILI9341_BLACK);
@@ -180,7 +170,7 @@ void gloveInterface()
 
       // Thumb
       tft.setTextColor(ILI9341_WHITE);
-      tft.setCursor(centerTextWidth(thumb, 12), centerTextHeight(-40)); //-40 to  20
+      tft.setCursor(centerTextWidth(thumb, 12), centerTextHeight(-40));
       tft.println(thumb + String(receivedData[4]));
 
       // Index
@@ -210,17 +200,66 @@ void gloveInterface()
       delay(100);
       offlineTime = millis();
     }
+    else if (radio.available() && receivedData[5] == 1){
+      radio.read(&receivedData, sizeof(receivedData));
+      
+      modeDisplay(receivedData[5],previousMode);
+      previousMode = receivedData[5];
+      
+       if(!previousStatus)
+      {
+        systemconnection(true);
+      }
+      
+      tft.fillRect(195, centerTextHeight(-40) - 10, 60, 20, ILI9341_BLACK);
+      tft.fillRect(195, centerTextHeight(-20) - 10, 60, 20, ILI9341_BLACK);
+      tft.fillRect(195, centerTextHeight(0) - 10, 60, 20, ILI9341_BLACK);
+      tft.fillRect(195, centerTextHeight(20) - 10, 60, 20, ILI9341_BLACK);
+      tft.fillRect(195, centerTextHeight(40) - 10, 60, 30, ILI9341_BLACK);
+
+      // Thumb
+      tft.setTextColor(ILI9341_WHITE);
+      tft.setCursor(centerTextWidth(thumb, 12), centerTextHeight(-40));
+      tft.println(thumb + String(receivedData[4]));
+
+      // Index
+      tft.setTextColor(ILI9341_WHITE);
+      tft.setCursor(centerTextWidth(index, 12), centerTextHeight(-20));
+      tft.println(index + String(receivedData[3]));
+
+      // Middle
+      tft.setTextColor(ILI9341_WHITE);
+      tft.setCursor(centerTextWidth(middle, 12), centerTextHeight(0));
+      tft.println(middle + String(receivedData[2]));
+
+      // Ring
+      tft.setTextColor(ILI9341_WHITE);
+      tft.setCursor(centerTextWidth(ring, 12), centerTextHeight(20));
+      tft.println(ring + String(receivedData[1]));
+
+      // Pinky
+      tft.setTextColor(ILI9341_WHITE);
+      tft.setCursor(centerTextWidth(pinky, 12), centerTextHeight(40));
+      tft.println(pinky + String(receivedData[0]));
+      
+      delay(100);
+      offlineTime = millis();
+     
+    }
+
+    else if(radio.available())
+    {
+      radio.read(&receivedData, sizeof(receivedData));
+    }
+
     else if (!stopLoop && (millis() - offlineTime > 1000))
     {   
-        receivedMode = 0;
-        modeDisplay(receivedMode,previousMode);
         systemconnection(false);     
     }
 
+
     Serial.println(receivedMode);
-    previousMode = receivedMode;
    
-    
   
   }
 }
@@ -233,24 +272,30 @@ void modeDisplay(int mode, int previousMode)
     return;
   }
   
-  String userON = "USER CONTROL: ON";
-  String userOFF  = "USER CONTROL: OFF";
+  String user = "USER CONTROL: ";
+ 
 
-  tft.fillRect(centerTextWidth(userOFF,12), centerTextHeight(60) + 10, 200, 25, ILI9341_BLACK);
-  tft.setCursor(centerTextWidth(userOFF,12), centerTextHeight(60) + 10);
+  tft.fillRect(centerTextWidth(user,12), centerTextHeight(60) + 10, 210, 25, ILI9341_BLACK);
+
+  tft.setCursor(centerTextWidth(user,12), centerTextHeight(60) + 10);
   tft.setTextSize(2);
   tft.setTextColor(ILI9341_WHITE);
   
 
   //user control
-  if (mode == 1)
+  if (mode == 2)
   {
-    tft.println(userON);
+    tft.print(user);
+    tft.setTextColor(ILI9341_GREEN);
+    tft.print("ON");
   }
-  else if(mode == 0)
+  else if(mode == 1)
   {
-    tft.println(userOFF);
+    tft.print(user);
+    tft.setTextColor(ILI9341_RED);
+    tft.print("OFF");
   }
+
 }
 
 //connection status

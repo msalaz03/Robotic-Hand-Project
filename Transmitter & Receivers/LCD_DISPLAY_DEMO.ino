@@ -128,6 +128,14 @@ void welcomeScreen()
 //flex sensor values + main screen
 void gloveInterface() 
 {
+  
+  uint16_t borderColor = ILI9341_WHITE;
+  int screenWidth = tft.width();
+  int screenHeight = tft.height();
+  int borderWidth = 2; // Adjust this value to change the width of the border
+
+  // Top border
+
   String thumb = "Thumb: "; 
   String index = "Index: "; 
   String middle = "Middle: ";
@@ -142,6 +150,15 @@ void gloveInterface()
 
  while (true) 
  {  
+  tft.drawRect(0, 0, screenWidth, borderWidth, borderColor);
+  // Left border
+  tft.drawRect(0, borderWidth, borderWidth, screenHeight - 2 * borderWidth, borderColor);
+  // Right border
+  tft.drawRect(screenWidth - borderWidth, borderWidth, borderWidth, screenHeight - 2 * borderWidth, borderColor);
+  // Bottom border
+  tft.drawRect(0, screenHeight - borderWidth, screenWidth, borderWidth, borderColor);
+  
+
     if (radio.available()) 
     {
       // Read the received data
@@ -163,28 +180,28 @@ void gloveInterface()
 
       // Thumb
       tft.setTextColor(ILI9341_WHITE);
-      tft.setCursor(centerTextWidth(thumb, 12), centerTextHeight(40));
-      tft.println(thumb + String(receivedData[0]));
+      tft.setCursor(centerTextWidth(thumb, 12), centerTextHeight(-40)); //-40 to  20
+      tft.println(thumb + String(receivedData[4]));
 
       // Index
       tft.setTextColor(ILI9341_WHITE);
-      tft.setCursor(centerTextWidth(index, 12), centerTextHeight(-40));
-      tft.println(index + String(receivedData[1]));
+      tft.setCursor(centerTextWidth(index, 12), centerTextHeight(-20));
+      tft.println(index + String(receivedData[3]));
 
       // Middle
       tft.setTextColor(ILI9341_WHITE);
-      tft.setCursor(centerTextWidth(middle, 12), centerTextHeight(-20));
+      tft.setCursor(centerTextWidth(middle, 12), centerTextHeight(0));
       tft.println(middle + String(receivedData[2]));
 
       // Ring
       tft.setTextColor(ILI9341_WHITE);
-      tft.setCursor(centerTextWidth(ring, 12), centerTextHeight(0));
-      tft.println(ring + String(receivedData[3]));
+      tft.setCursor(centerTextWidth(ring, 12), centerTextHeight(20));
+      tft.println(ring + String(receivedData[1]));
 
       // Pinky
       tft.setTextColor(ILI9341_WHITE);
-      tft.setCursor(centerTextWidth(pinky, 12), centerTextHeight(20));
-      tft.println(pinky + String(receivedData[4]));
+      tft.setCursor(centerTextWidth(pinky, 12), centerTextHeight(40));
+      tft.println(pinky + String(receivedData[0]));
       
       for (int i = 0; i < 5; i++){
         Serial.println(String(receivedData[i]));

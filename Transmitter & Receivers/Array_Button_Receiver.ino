@@ -21,7 +21,7 @@
   Servo myServo5;
 
   //define variable to receive value
-  int data[5];
+  int data[6];
 
   void setup() {
     Serial.begin(9600);
@@ -35,6 +35,13 @@
     myServo3.attach(servoPin3);
     myServo4.attach(servoPin4);
     myServo5.attach(servoPin5);
+
+    myServo1.write(0);
+    myServo2.write(0);
+    myServo3.write(0);
+    myServo4.write(0);
+    myServo5.write(0);
+    delay(1000);
   }
 
   void loop() {
@@ -45,7 +52,7 @@
 
       radio.read(&data, sizeof(data));
 
-      Serial.write((byte*)&data, sizeof(data)); // Send motor data to Arduino Uno via Serial Communication
+      Serial.write((byte*)&data, sizeof(data)); 
 
       myServo1.write(data[0]);
       myServo2.write(data[1]);
@@ -58,6 +65,7 @@
       Serial.println("MOTOR MIDDLE: " + String(data[2]));
       Serial.println("MOTOR INDEX: " + String(data[3]));      
       Serial.println("MOTOR THUMB: " + String(data[4]));
+      Serial.println("Mode: " + String(data[5]));
       delay(10);
     }
 

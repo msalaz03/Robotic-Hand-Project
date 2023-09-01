@@ -4,12 +4,10 @@
 At its core, the hand integrates microcontrollers, servos, transceiver modules, and flex sensors. The project can be divided into three main parts: the glove controller, the hand, and the base.
 </p>
 
-<h3 align="center">Here is a video to demonstrate what I was able to create</h3>
-
 <p align="center">
   <a href="https://www.youtube.com/watch?v=eI7jYIY5Ie4">
     <img src="https://img.youtube.com/vi/eI7jYIY5Ie4/0.jpg" alt="Watch the video" />
   </a>
 </p>
 
-<p align="center">Click to watch the video</p
+<p align="center">Here is a video to watch a live demo </p>

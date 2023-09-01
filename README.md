@@ -1,4 +1,4 @@
-<h1>Welcome to my Summer '23 Project</h1>
+<h1 align = "center" >Welcome to my Summer '23 Project</h1>
 
 <hr>
 <p>Upon completing my first year of engineering at the University of Guelph, I felt a strong desire to expand my skills and contribute to practical applications.  

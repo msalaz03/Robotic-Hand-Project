@@ -3,6 +3,7 @@
 #include "Adafruit_ILI9341.h"
 #include <SPI.h>
 #include <RF24.h>
+#include <string.h>
 
 //NRF PINS
 #define NRF_CE 7
@@ -160,6 +161,7 @@ void gloveInterface()
       
        modeDisplay(receivedData[5],previousMode);
        previousMode = receivedData[5];
+
       
       //print string values
       tft.fillRect(195, centerTextHeight(-40) - 10, 60, 20, ILI9341_BLACK);
@@ -168,10 +170,13 @@ void gloveInterface()
       tft.fillRect(195, centerTextHeight(20) - 10, 60, 20, ILI9341_BLACK);
       tft.fillRect(195, centerTextHeight(40) - 10, 60, 30, ILI9341_BLACK);
 
-      // Thumb
-      tft.setTextColor(ILI9341_WHITE);
-      tft.setCursor(centerTextWidth(thumb, 12), centerTextHeight(-40));
-      tft.println(thumb + String(receivedData[4]));
+      // if (receivedData[4].length() >= 1)
+      // { 
+        // Thumb
+        tft.setTextColor(ILI9341_WHITE);
+        tft.setCursor(centerTextWidth(thumb, 12), centerTextHeight(-40));
+        tft.println(thumb + String(receivedData[4]));
+      //}
 
       // Index
       tft.setTextColor(ILI9341_WHITE);
@@ -193,6 +198,7 @@ void gloveInterface()
       tft.setCursor(centerTextWidth(pinky, 12), centerTextHeight(40));
       tft.println(pinky + String(receivedData[0]));
       
+
       for (int i = 0; i < 5; i++){
         Serial.println(String(receivedData[i]));
       }
@@ -211,36 +217,39 @@ void gloveInterface()
         systemconnection(true);
       }
       
-      tft.fillRect(195, centerTextHeight(-40) - 10, 60, 20, ILI9341_BLACK);
-      tft.fillRect(195, centerTextHeight(-20) - 10, 60, 20, ILI9341_BLACK);
-      tft.fillRect(195, centerTextHeight(0) - 10, 60, 20, ILI9341_BLACK);
-      tft.fillRect(195, centerTextHeight(20) - 10, 60, 20, ILI9341_BLACK);
-      tft.fillRect(195, centerTextHeight(40) - 10, 60, 30, ILI9341_BLACK);
+        tft.fillRect(195, centerTextHeight(-40) - 10, 60, 20, ILI9341_BLACK);
+        tft.fillRect(195, centerTextHeight(-20) - 10, 60, 20, ILI9341_BLACK);
+        tft.fillRect(195, centerTextHeight(0) - 10, 60, 20, ILI9341_BLACK);
+        tft.fillRect(195, centerTextHeight(20) - 10, 60, 20, ILI9341_BLACK);
+        tft.fillRect(195, centerTextHeight(40) - 10, 60, 30, ILI9341_BLACK);
 
-      // Thumb
-      tft.setTextColor(ILI9341_WHITE);
-      tft.setCursor(centerTextWidth(thumb, 12), centerTextHeight(-40));
-      tft.println(thumb + String(receivedData[4]));
+      // iif (receivedData[4].length() >= 1)
+      // {
+        // Thumb
+        tft.setTextColor(ILI9341_WHITE);
+        tft.setCursor(centerTextWidth(thumb, 12), centerTextHeight(-40));
+        tft.println(thumb + String(receivedData[4]));
+      //}
 
-      // Index
-      tft.setTextColor(ILI9341_WHITE);
-      tft.setCursor(centerTextWidth(index, 12), centerTextHeight(-20));
-      tft.println(index + String(receivedData[3]));
+        // Index
+        tft.setTextColor(ILI9341_WHITE);
+        tft.setCursor(centerTextWidth(index, 12), centerTextHeight(-20));
+        tft.println(index + String(receivedData[3]));
 
-      // Middle
-      tft.setTextColor(ILI9341_WHITE);
-      tft.setCursor(centerTextWidth(middle, 12), centerTextHeight(0));
-      tft.println(middle + String(receivedData[2]));
+        // Middle
+        tft.setTextColor(ILI9341_WHITE);
+        tft.setCursor(centerTextWidth(middle, 12), centerTextHeight(0));
+        tft.println(middle + String(receivedData[2]));
 
-      // Ring
-      tft.setTextColor(ILI9341_WHITE);
-      tft.setCursor(centerTextWidth(ring, 12), centerTextHeight(20));
-      tft.println(ring + String(receivedData[1]));
+        // Ring
+        tft.setTextColor(ILI9341_WHITE);
+        tft.setCursor(centerTextWidth(ring, 12), centerTextHeight(20));
+        tft.println(ring + String(receivedData[1]));
 
-      // Pinky
-      tft.setTextColor(ILI9341_WHITE);
-      tft.setCursor(centerTextWidth(pinky, 12), centerTextHeight(40));
-      tft.println(pinky + String(receivedData[0]));
+        // Pinky
+        tft.setTextColor(ILI9341_WHITE);
+        tft.setCursor(centerTextWidth(pinky, 12), centerTextHeight(40));
+        tft.println(pinky + String(receivedData[0]));
       
       delay(100);
       offlineTime = millis();

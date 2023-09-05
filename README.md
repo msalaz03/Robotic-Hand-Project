@@ -6,7 +6,7 @@ At its core, the hand integrates microcontrollers, servos, transceiver modules, 
 
 <p align="center">
   <a href="https://www.youtube.com/shorts/3ULT0zy-e6k">
-    <img src="https://www.youtube.com/shorts/3ULT0zy-e6k" alt="Watch the video" />
+    <img src="[https://www.youtube.com/shorts/3ULT0zy-e6k](https://www.youtube.com/shorts/3ULT0zy-e6k?feature=share)" alt="Watch the video" />
   </a>
 </p>
 

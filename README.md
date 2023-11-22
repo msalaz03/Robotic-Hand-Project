@@ -7,7 +7,7 @@ At its core, the hand integrates microcontrollers, servos, transceiver modules, 
 
 <h2 align = "center"> SolidWorks Full Assembly </h2>
 <br>
-  <p align = "center"> <img src = "Final Assembly Isometric.png" height = "500" width "100"> <img src = "Hnd Assembly Isometric (Black).png" height = "500" width "100"</p>
+  <p align = "center"> <img src = "Final Assembly Isometric.png" height = "500" width "100"> <img src = "Hnd Assembly Isometric (Black).png" height = "500" width "100"></p>
     
 <br>
 <p align="center">
@@ -16,6 +16,19 @@ At its core, the hand integrates microcontrollers, servos, transceiver modules, 
   </a>
 </p>
 
+<br><br>
+
+<h2 align = "center">Motor Controller Schematic</h2>
+<br>
+  <p align = "center"> <img src = "Servo Controller Completed.PNG" height = "500" width "100"> </p>
+    
+<br><br>
+
+
+<h2 align = "center">Glove Controller Schematic</h2>
+<br>
+  <p align = "center"> <img src = "Transmitter Schematic.png" height = "500" width "100"></p>
+    
 <br><br>
 
 <table align = "center">

@@ -16,8 +16,10 @@ At its core, the hand integrates microcontrollers, servos, transceiver modules, 
   </a>
 </p>
 
+<br><br>
+
 <table align = "center">
-  <h1 align = "center"> Materials</h1>
+  <h1 align = "center"> Materials List + Description</h1>
   <tr>
     <th>Item</th>
     <th>Description</th>

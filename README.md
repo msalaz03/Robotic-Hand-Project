@@ -9,8 +9,10 @@ At its core, the hand integrates microcontrollers, servos, transceiver modules, 
 <br>
 
 
-<h2 align = "center"> Hand </h2>
+<h2 align = "center"> Hand Assembly</h2>
 <br>
+  <p align = "center"> <img src = "Hnd Assembly Isometric (Black).png" height = "900"></p>
+<br><br>
 
 <p align="center">
   <a href="https://www.youtube.com/shorts/3ULT0zy-e6k">
